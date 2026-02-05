@@ -416,3 +416,5 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+*.lib
+/Apex_External/Memory/driver.h
