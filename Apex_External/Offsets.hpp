@@ -17,6 +17,8 @@ const uint64_t OFF_Armor = 0x48f4;
 const uint64_t OFF_scriptNameIndex = 0x580;
 const uint64_t OFF_fFlags = 0xC8;
 const uint64_t OFF_LifeState = 0x690;
+const uint64_t OFF_Bone = 0xda8 + 0x48;	// m_nForceBone + 0x48 ?
+const uint64_t OFF_StudioHdr = 0xff0;
 
 namespace Global {
 	inline uintptr_t GameBase;

@@ -1,7 +1,7 @@
 #include <iostream>
 #include <thread>
 #include <chrono>
-#include "OS-ImGui/OS-ImGui.h"
+#include "Draw.hpp"
 #include "Entity.hpp"
 
 using namespace std;
@@ -11,21 +11,18 @@ Vector2 SightCenter = { ScreenSize.x / 2.f,ScreenSize.y / 2.f };
 
 void fun()
 {
-	this_thread::sleep_for(chrono::milliseconds(1));
+	// this_thread::sleep_for(chrono::milliseconds(1));
 
 	uint64_t viewRender = drv.RPM<uint64_t>(Global::GameBase + OFF_VIEW_RENDER);
 	uint64_t viewMatrix = drv.RPM<uint64_t>(viewRender + OFF_VIEW_MATRIX);
 	Matrix m = drv.RPM<Matrix>(viewMatrix);
 
-	for (int i = 0; i <= 100; i++) {
+	for (int i = 0; i <= 128; i++) {
 		DWORD64 Entity = GetEntityById(i, Global::GameBase);
 		if (Entity == 0)
 			continue;
 
 		Vector3 Position = drv.RPM<Vector3>(Entity + OFF_VecAbsOrigin);
-		//Vector3 ScreenPosition = _WorldToScreen(Position, m, ScreenSize);
-		//if (ScreenPosition.z <= 0.f)
-		//	continue;
 
 		// Color based on health
 		int MaxHealth = drv.RPM<int>(Entity + OFF_iMaxHealth);
@@ -33,6 +30,22 @@ void fun()
 		float r = 255.f - TargetHealth;
 		float g = TargetHealth;
 		float b = 0.f;
+
+		Vector3 bs ,hs;
+		Vector3 HeadPosition = NewHitbox(Entity, 0);
+		HeadPosition.z += 12.f;
+		world_to_screen(Position, m, ScreenSize.x, ScreenSize.y, bs);
+		world_to_screen(HeadPosition, m, ScreenSize.x, ScreenSize.y, hs);
+
+		float height = fabsf(fabsf(hs.y) - fabsf(bs.y));
+		float width = height / 2.f;
+		float boxLeft = bs.x - (width / 2);
+		float boxRight = bs.x + (width / 2);
+		int widthC = (int)boxRight - (int)boxLeft;
+		int x1, y1, x2, y2;
+		x1 = (int)boxLeft; y1 = (int)hs.y; x2 = (int)boxRight; y2 = (int)bs.y;
+
+		DrawBox((int)boxLeft, (int)hs.y, (int)boxRight, (int)bs.y, ImColor(0, 255, 0, 255), 1.5f);
 	}
 }
 

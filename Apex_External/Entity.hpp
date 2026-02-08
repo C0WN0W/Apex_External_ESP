@@ -75,3 +75,29 @@ Vector3 GetPosition(uint64_t Addr)
 {
 	return drv.RPM<Vector3>(Addr + OFF_VecAbsOrigin);
 }
+
+Vector3 NewHitbox(uintptr_t ent, int HitBox) {
+	DWORD64 Bones = drv.RPM<DWORD64>(ent + OFF_Bone);
+	if (!Bones) return Vector3();
+	uintptr_t Model = drv.RPM<uintptr_t>(ent + OFF_StudioHdr);
+
+	DWORD64 StudioHdr = drv.RPM<DWORD64>(Model + 8);
+	if (!StudioHdr) return Vector3();
+
+	uint16_t HitboxCache = drv.RPM<uint16_t>(StudioHdr + 0x34);
+	uint64_t HitboxArray = StudioHdr + ((uint16_t)(HitboxCache & 0xFFFE) << (4 * (HitboxCache & 1)));
+
+	int HitboxNum = HitBox;
+
+	uint16_t IndexCache = drv.RPM<uint16_t>(HitboxArray + 4);
+	int HitboxIndex = ((uint16_t)(IndexCache & 0xFFFE) << (4 * (IndexCache & 1)));
+	uint16_t Bone = drv.RPM<uint16_t>(HitboxIndex + HitboxArray + (HitboxNum * 0x20));
+
+	Vector3 BoneOff;
+
+	Matrix3x4 BoneMatrix = drv.RPM<Matrix3x4>(Bones + (Bone * sizeof(Matrix3x4)));
+	BoneOff = { BoneMatrix._14, BoneMatrix._24, BoneMatrix._34 };
+
+	Vector3 Pos = GetPosition(ent) + BoneOff;
+	return Pos;
+}

@@ -1,12 +1,78 @@
 #pragma once
 #include <cstdint>
+#include <Windows.h>
+#include <math.h>
+#include <vector>
+#include <iostream>
+#include <string>
+#include <chrono>
 
 struct Vector2 {
 	float x, y;
 };
 
-struct Vector3 {
+class Vector3 {
+public:
+	Vector3();
+	Vector3(float, float, float);
+	~Vector3();
+
 	float x, y, z;
+
+	Vector3& operator+=(const Vector3& v) {
+		x += v.x; y += v.y; z += v.z; return *this;
+	}
+	Vector3& operator-=(const Vector3& v) {
+		x -= v.x; y -= v.y; z -= v.z; return *this;
+	}
+	Vector3& operator*=(float v) {
+		x *= v; y *= v; z *= v; return *this;
+	}
+	bool operator==(const Vector3& v) {
+		return (x == v.x) && (y == v.y);
+	}
+	Vector3 operator+(const Vector3& v) {
+		return Vector3{ x + v.x, y + v.y, z + v.z };
+	}
+	Vector3 operator-(const Vector3& v) {
+		return Vector3{ x - v.x, y - v.y, z - v.z };
+	}
+	Vector3 operator*(float fl) const {
+		return Vector3(x * fl, y * fl, z * fl);
+	}
+	Vector3 operator*(const Vector3& v) const {
+		return Vector3(x * v.x, y * v.y, z * v.z);
+	}
+	Vector3& operator/=(float fl) {
+		x /= fl;
+		y /= fl;
+		z /= fl;
+		return *this;
+	}
+	auto operator-(const Vector3& other) const -> Vector3 {
+		auto buf = *this;
+
+		buf.x -= other.x;
+		buf.y -= other.y;
+		buf.z -= other.z;
+
+		return buf;
+	}
+
+	auto operator/(float other) const {
+		Vector3 vec;
+		vec.x = x / other;
+		vec.y = y / other;
+		vec.z = z / other;
+		return vec;
+	}
+
+	float& operator[](int i) {
+		return ((float*)this)[i];
+	}
+	float operator[](int i) const {
+		return ((float*)this)[i];
+	}
 };
 
 struct Matrix {

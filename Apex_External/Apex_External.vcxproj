@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Draw.hpp" />
     <ClInclude Include="Entity.hpp" />
     <ClInclude Include="Functions.hpp" />
     <ClInclude Include="Offsets.hpp" />
@@ -50,6 +51,7 @@
     <ClCompile Include="OS-ImGui\OS-ImGui.cpp" />
     <ClCompile Include="OS-ImGui\OS-ImGui_Base.cpp" />
     <ClCompile Include="OS-ImGui\OS-ImGui_External.cpp" />
+    <ClCompile Include="Structs.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="Memory\2022_MD_TX__x64.lib" />
