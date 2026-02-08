@@ -45,7 +45,7 @@ void fun()
 		int x1, y1, x2, y2;
 		x1 = (int)boxLeft; y1 = (int)hs.y; x2 = (int)boxRight; y2 = (int)bs.y;
 
-		DrawBox((int)boxLeft, (int)hs.y, (int)boxRight, (int)bs.y, ImColor(0, 255, 0, 255), 1.5f);
+		DrawBox((int)boxLeft, (int)hs.y, (int)boxRight, (int)bs.y, ImColor((int)r, (int)g, (int)b, 255), 1.5f);
 	}
 }
 
