@@ -29,3 +29,49 @@ bool isValid(uint64_t EntityAddr)
 		return false;
 	return true;
 }
+
+bool isOnGround(uint64_t player)
+{
+	uint32_t flags = drv.RPM<uint32_t>(player + OFF_fFlags);
+	return (flags & 1) != 0;
+}
+
+int GetTeamID(uint64_t Addr)
+{
+	return drv.RPM<int>(Addr + OFF_iTeamNum);
+}
+
+int GetHealth(uint64_t Addr)
+{
+	return drv.RPM<int>(Addr + OFF_iHealth);
+}
+
+int GetMaxHealth(uint64_t Addr)
+{
+	return drv.RPM<int>(Addr + OFF_iMaxHealth);
+}
+
+int GetShield(uint64_t Addr)
+{
+	return drv.RPM<int>(Addr + OFF_iShield);
+}
+
+int GetMaxShield(uint64_t Addr)
+{
+	return drv.RPM<int>(Addr + OFF_iMaxShield);
+}
+
+int GetArmor(uint64_t Addr)
+{
+	return drv.RPM<int>(Addr + OFF_Armor);
+}
+
+int GetLifeState(uint64_t Addr)
+{
+	return drv.RPM<int>(Addr + OFF_LifeState);
+}
+
+Vector3 GetPosition(uint64_t Addr)
+{
+	return drv.RPM<Vector3>(Addr + OFF_VecAbsOrigin);
+}
