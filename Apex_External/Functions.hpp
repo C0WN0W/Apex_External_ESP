@@ -1,16 +1,16 @@
 #pragma once
 #include "Offsets.hpp"
 
-bool world_to_screen(Vector3 from, float* m_vMatrix, int targetWidth, int targetHeight, Vector3& to)
+bool world_to_screen(Vector3 from, Matrix m, int targetWidth, int targetHeight, Vector3& to)
 {
-    float w = m_vMatrix[12] * from.x + m_vMatrix[13] * from.y + m_vMatrix[14] * from.z + m_vMatrix[15];
+    float w = m.matrix[12] * from.x + m.matrix[13] * from.y + m.matrix[14] * from.z + m.matrix[15];
 
     if (w < 0.01f) {
         return false;
     }
 
-    to.x = m_vMatrix[0] * from.x + m_vMatrix[1] * from.y + m_vMatrix[2] * from.z + m_vMatrix[3];
-    to.y = m_vMatrix[4] * from.x + m_vMatrix[5] * from.y + m_vMatrix[6] * from.z + m_vMatrix[7];
+    to.x = m.matrix[0] * from.x + m.matrix[1] * from.y + m.matrix[2] * from.z + m.matrix[3];
+    to.y = m.matrix[4] * from.x + m.matrix[5] * from.y + m.matrix[6] * from.z + m.matrix[7];
 
     float invw = 1.0f / w;
     to.x *= invw;
