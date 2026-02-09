@@ -22,6 +22,7 @@
     <ClInclude Include="Draw.hpp" />
     <ClInclude Include="Entity.hpp" />
     <ClInclude Include="Functions.hpp" />
+    <ClInclude Include="Memory\driver.h" />
     <ClInclude Include="Offsets.hpp" />
     <ClInclude Include="OS-ImGui\imgui\imconfig.h" />
     <ClInclude Include="OS-ImGui\imgui\imgui.h" />
@@ -54,7 +55,7 @@
     <ClCompile Include="Structs.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Library Include="Memory\2022_MD_TX__x64.lib" />
+    <Library Include="Memory\HKDrv_Lib.lib" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
@@ -164,6 +165,8 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
+      <AdditionalDependencies>HKDrv_Lib.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)Memory\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -7,7 +7,7 @@
 
 namespace drv
 {
-	bool InstallDrv();
+	bool installDrv();
 
 	bool UnloadDrv();
 

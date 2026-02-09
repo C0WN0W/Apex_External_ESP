@@ -18,10 +18,10 @@ void fun()
 	int loopsize = in_firing_range ? 15000 : 128;
 	// printf("Level Name: %s | Loop Size: %d\n", level_name.c_str(), loopsize);
 
-	uint64_t viewRender = drv.RPM<uint64_t>(Global::GameBase + OFF_VIEW_RENDER);
-	uint64_t viewMatrix = drv.RPM<uint64_t>(viewRender + OFF_VIEW_MATRIX);
-	uint64_t localPlayerPtr = drv.RPM<uint64_t>(Global::GameBase + OFF_LOCALPLAYER);
-	Matrix m = drv.RPM<Matrix>(viewMatrix);
+	uint64_t viewRender = drv::Read<uint64_t>(Global::pid, Global::GameBase + OFF_VIEW_RENDER);
+	uint64_t viewMatrix = drv::Read<uint64_t>(Global::pid, viewRender + OFF_VIEW_MATRIX);
+	uint64_t localPlayerPtr = drv::Read<uint64_t>(Global::pid, Global::GameBase + OFF_LOCALPLAYER);
+	Matrix m = drv::Read<Matrix>(Global::pid, viewMatrix);
 
 	for (int i = 0; i <= loopsize; i++) {
 
@@ -63,7 +63,7 @@ void fun()
 			continue;
 
 		// Color based on health
-		int MaxHealth = drv.RPM<int>(Plyer.Ptr + OFF_iMaxHealth);
+		int MaxHealth = drv::Read<int>(Global::pid, Plyer.Ptr + OFF_iMaxHealth);
 		float TargetHealth = Plyer.Health / (float)MaxHealth * 255.f;
 		float r = 255.f - TargetHealth;
 		float g = TargetHealth;
@@ -89,33 +89,24 @@ void fun()
 
 void main()
 {
-	if (!(drv.Loaddriver("AXP4ER6S677APV6A77I09C")))
+	if (!(drv::installDrv()))
 	{
 		cout << "[!] Failed to install driver!" << endl;
 		system("pause");
 		exit(0);
 	}
 
-	if (!(drv.IsInstall()))
-	{
-		cout << "[!] Failed to connect driver!" << endl;
-		system("pause");
-		exit(0);
-	}
-
-	DWORD PID = 0;
-	while (!PID)
+	while (!Global::pid)
 	{
 		cout << "[!] Waiting game process..." << endl;
 		Sleep(2000);
-		PID = drv.GetProcessIdByName("r5apex_dx12.exe");
+		Global::pid = drv::GetProcessIdByName("r5apex_dx12.exe");
 	}
 
 	system("cls");
-	cout << "[+] PID: " << PID << endl;
+	cout << "[+] PID: " << Global::pid << endl;
 
-	drv.proceint(PID);
-	Global::GameBase = drv.GetMoudleBase();
+	drv::GetModule(Global::pid, L"r5apex_dx12.exe", &Global::GameBase);
 	if (!Global::GameBase)
 	{
 		cout << "[!] Failed to get region!" << endl;

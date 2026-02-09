@@ -28,6 +28,7 @@ const uint64_t OFF_SignifierName = 0x470;
 const uint64_t OFF_NameIndex = 0x580;
 
 namespace Global {
+	inline int pid;
 	inline uintptr_t GameBase;
 	inline uintptr_t ViewRender;
 	inline Matrix m;

@@ -35,6 +35,6 @@ float GameUnitsToMeters(float units)
 
 std::string ReadStr32(uint64_t src)
 {
-	StrBuf32 ret = drv.RPM<StrBuf32>(src);
+	StrBuf32 ret = drv::Read<StrBuf32>(Global::pid, src);
 	return std::string::basic_string(ret.buf);
 }
