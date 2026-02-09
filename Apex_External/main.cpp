@@ -16,7 +16,7 @@ void fun()
 	std::string level_name = GetLevelName();
 	bool in_firing_range = level_name == "mp_rr_canyonlands_stagin ";
 	int loopsize = in_firing_range ? 15000 : 128;
-	printf("Level Name: %s | Loop Size: %d\n", level_name.c_str(), loopsize);
+	// printf("Level Name: %s | Loop Size: %d\n", level_name.c_str(), loopsize);
 
 	uint64_t viewRender = drv.RPM<uint64_t>(Global::GameBase + OFF_VIEW_RENDER);
 	uint64_t viewMatrix = drv.RPM<uint64_t>(viewRender + OFF_VIEW_MATRIX);
