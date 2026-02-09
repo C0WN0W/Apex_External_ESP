@@ -32,3 +32,9 @@ float GameUnitsToMeters(float units)
 {
     return units / 39.37007874;
 }
+
+std::string ReadStr32(uint64_t src)
+{
+	StrBuf32 ret = drv.RPM<StrBuf32>(src);
+	return std::string::basic_string(ret.buf);
+}

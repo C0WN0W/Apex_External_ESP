@@ -96,6 +96,10 @@ public:
 	};
 };
 
+struct StrBuf32 {
+	char buf[32];
+};
+
 struct Bone {
 	BYTE shit[0xCC];
 	float x;
@@ -103,4 +107,29 @@ struct Bone {
 	float y;
 	BYTE shit3[0xC];
 	float z;
+};
+
+struct Player {
+	bool NPC;
+	uint64_t Ptr;
+	Vector3 Position;
+	Vector3 Velocity;
+	std::string Name;
+	std::string SignifierName;
+	int armorType;
+	int Shield;
+	int MaxShield;
+	int Health;
+	int TeamID;
+	int XP;
+	int Level;
+	bool IsSpectator;
+	bool IsValid;
+	bool IsKnocked;
+	bool IsVisible;
+	int LifeState;
+	float LastInCrosshairTime;
+	float ToDistance;
+
+	uint64_t WorldTimeBase;
 };

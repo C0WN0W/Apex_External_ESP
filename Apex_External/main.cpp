@@ -11,30 +11,68 @@ Vector2 SightCenter = { ScreenSize.x / 2.f,ScreenSize.y / 2.f };
 
 void fun()
 {
-	// this_thread::sleep_for(chrono::milliseconds(1));
+	this_thread::sleep_for(chrono::milliseconds(1));
+
+	std::string level_name = GetLevelName();
+	bool in_firing_range = level_name == "mp_rr_canyonlands_stagin ";
+	int loopsize = in_firing_range ? 15000 : 128;
+	printf("Level Name: %s | Loop Size: %d\n", level_name.c_str(), loopsize);
 
 	uint64_t viewRender = drv.RPM<uint64_t>(Global::GameBase + OFF_VIEW_RENDER);
 	uint64_t viewMatrix = drv.RPM<uint64_t>(viewRender + OFF_VIEW_MATRIX);
+	uint64_t localPlayerPtr = drv.RPM<uint64_t>(Global::GameBase + OFF_LOCALPLAYER);
 	Matrix m = drv.RPM<Matrix>(viewMatrix);
 
-	for (int i = 0; i <= 128; i++) {
-		DWORD64 Entity = GetEntityById(i, Global::GameBase);
-		if (Entity == 0)
+	for (int i = 0; i <= loopsize; i++) {
+
+		Player Plyer;
+		Plyer.Ptr = GetEntityPtr(i);
+		if (Plyer.Ptr == 0 || Plyer.Ptr == localPlayerPtr) continue;
+
+		Plyer.SignifierName = GetSignifier(Plyer.Ptr);
+
+		if (Plyer.SignifierName == "player")
+		{
+			Plyer.NPC = false;
+			Plyer.Position = GetPosition(Plyer.Ptr);
+			Plyer.Name = GetName(Plyer.Ptr);
+			Plyer.TeamID = GetTeamID(Plyer.Ptr);
+			Plyer.armorType = GetArmor(Plyer.Ptr);
+			Plyer.Shield = GetShield(Plyer.Ptr);
+			Plyer.MaxShield = GetMaxShield(Plyer.Ptr);
+			Plyer.Health = GetHealth(Plyer.Ptr);
+			Plyer.IsKnocked = GetKnocked(Plyer.Ptr);
+			Plyer.LifeState = GetLifeState(Plyer.Ptr);
+			Plyer.ToDistance = GameUnitsToMeters(GetDistance(GetPosition(localPlayerPtr), Plyer.Position));
+		}
+		else if (Plyer.SignifierName == "npc_dummie")
+		{
+			Plyer.NPC = true;
+			Plyer.Position = GetPosition(Plyer.Ptr);
+			Plyer.Name = "Dummie";
+			Plyer.TeamID = GetTeamID(Plyer.Ptr);
+			Plyer.armorType = GetArmor(Plyer.Ptr);
+			Plyer.Shield = GetShield(Plyer.Ptr);
+			Plyer.MaxShield = GetMaxShield(Plyer.Ptr);
+			Plyer.Health = GetHealth(Plyer.Ptr);
+			Plyer.IsKnocked = GetKnocked(Plyer.Ptr);
+			Plyer.LifeState = GetLifeState(Plyer.Ptr);
+			Plyer.ToDistance = GameUnitsToMeters(GetDistance(GetPosition(localPlayerPtr), Plyer.Position));
+		}
+		else
 			continue;
 
-		Vector3 Position = drv.RPM<Vector3>(Entity + OFF_VecAbsOrigin);
-
 		// Color based on health
-		int MaxHealth = drv.RPM<int>(Entity + OFF_iMaxHealth);
-		float TargetHealth = drv.RPM<float>(Entity + OFF_iHealth) / (float)MaxHealth * 255.f;
+		int MaxHealth = drv.RPM<int>(Plyer.Ptr + OFF_iMaxHealth);
+		float TargetHealth = Plyer.Health / (float)MaxHealth * 255.f;
 		float r = 255.f - TargetHealth;
 		float g = TargetHealth;
 		float b = 0.f;
 
 		Vector3 bs ,hs;
-		Vector3 HeadPosition = NewHitbox(Entity, 0);
+		Vector3 HeadPosition = NewHitbox(Plyer.Ptr, 0);
 		HeadPosition.z += 12.f;
-		world_to_screen(Position, m, ScreenSize.x, ScreenSize.y, bs);
+		world_to_screen(Plyer.Position, m, ScreenSize.x, ScreenSize.y, bs);
 		world_to_screen(HeadPosition, m, ScreenSize.x, ScreenSize.y, hs);
 
 		float height = fabsf(fabsf(hs.y) - fabsf(bs.y));

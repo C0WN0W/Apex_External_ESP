@@ -1,19 +1,28 @@
 #pragma once
 #include "Functions.hpp"
 
-uint64_t GetEntityById(uint64_t Entity, uint64_t BaseAddr)
+std::string GetLevelName()
 {
-	uint64_t EntityList = BaseAddr + OFF_ENTITYLIST;
-	uint64_t BaseEntity = drv.RPM<uint64_t>(EntityList);
-
-	if (!BaseEntity)
-		return NULL;
-	return drv.RPM<uint64_t>(EntityList + (Entity << 5));
+	char tmpstr;
+	tmpstr = drv.RPM<char>(Global::GameBase + OFF_LEVELNAME, 32);
+	return std::string(&tmpstr);
 }
 
 uint64_t GetEntityPtr(int i)
 {
 	return drv.RPM<uint64_t>(Global::GameBase + OFF_ENTITYLIST + ((uint64_t)i << 5));
+}
+
+uint64_t GetLocalPlayerPtr()
+{
+	int i = drv.RPM<int>(Global::GameBase + OFF_LOCAL_ENTITY_HANDLE);
+	return drv.RPM<uint64_t>(Global::GameBase + OFF_ENTITYLIST + ((uint64_t)i << 5));
+}
+
+std::string GetSignifier(uint64_t Addr)
+{
+	uint64_t SignifierPtr = drv.RPM<uint64_t>(Addr + OFF_SignifierName);
+	return ReadStr32(SignifierPtr);
 }
 
 int get_script_name(uint64_t EntityAddr)
@@ -74,6 +83,40 @@ int GetLifeState(uint64_t Addr)
 Vector3 GetPosition(uint64_t Addr)
 {
 	return drv.RPM<Vector3>(Addr + OFF_VecAbsOrigin);
+}
+
+int GetKnocked(uint64_t Addr)
+{
+	return drv.RPM<int>(Addr + OFF_bleedoutState);
+}
+
+std::string GetName(uint64_t Addr)
+{
+	uint64_t NameIndex = drv.RPM<uint64_t>(Addr + OFF_NameIndex);
+	uint64_t NameOffset = drv.RPM<uint64_t>(Global::GameBase + OFF_NAMELIST + (NameIndex - 1) * 24);
+	
+	std::string PlayerName = ReadStr32(NameOffset);
+	return PlayerName;
+}
+
+float GetDistance(Vector3* p1, Vector3* p2)
+{
+	Vector3 tmp = { 0,0,0 };
+	tmp.x = p1->x - p2->x;
+	tmp.y = p1->y - p2->y;
+	tmp.z = p1->z - p2->z;
+
+	return (float)sqrt((double)tmp.x * tmp.x + (double)tmp.y * tmp.y + (double)tmp.z * tmp.z);
+}
+
+float GetDistance(Vector3 LocalPlayer, Vector3 Entity)
+{
+	Vector3 tmp = { 0,0,0 };
+	tmp.x = LocalPlayer.x - Entity.x;
+	tmp.y = LocalPlayer.y - Entity.y;
+	tmp.z = LocalPlayer.z - Entity.z;
+
+	return (float)sqrt((double)tmp.x * tmp.x + (double)tmp.y * tmp.y + (double)tmp.z * tmp.z);
 }
 
 Vector3 NewHitbox(uintptr_t ent, int HitBox) {
